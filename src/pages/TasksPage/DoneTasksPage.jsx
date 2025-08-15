@@ -6,52 +6,30 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTask, doneTask } from "../../store/reducers/tasksReducer/tasksReducer";
+import { deleteDoneTask } from "../../store/reducers/tasksReducer/tasksReducer";
 
-const TasksPage = () => {
-    const theme = useTheme();
-    const searchValue = useSelector(state => state.tasks.searchQuery);
-    const tasks = useSelector(state => state.tasks.tasks);
+const DoneTasksPage = () => {
 
+    const doneTasks = useSelector(state => state.tasks.doneTasks);
     const dispatch = useDispatch();
+    
     const handleDelete = (id) => {
-        const newTasks = tasks.filter((task) => task.id != id);
+        console.log(id);
+        console.log(doneTasks)
+        const newTasks = doneTasks.filter(task => task.id != id);
         console.log(newTasks);
-        dispatch(deleteTask(newTasks));
+        dispatch(deleteDoneTask(newTasks));
     }
 
-
-    const handleDone = (id) => {
-        dispatch(doneTask(id));
-    }
-
-    const filteredTasks = searchValue
-        ? tasks.filter(task =>
-            task.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-            task.description.toLowerCase().includes(searchValue.toLowerCase()) ||
-            task.tags.toLowerCase().includes(searchValue.toLowerCase())
-        )
-        : tasks;
-
-
+    const theme = useTheme();
     return (
         <>
-            {filteredTasks.length > 0 || tasks || filteredTasks ? (
+            {doneTasks ? (
 
                 <Box sx={{ height: "100%", bgcolor: theme.palette.primary.light, width: "100%" }}>
-                    <Box sx={{ m: 4, display: "flex" }}>
-                        <Link to={"/tasks/add"} style={{ width: "100%", textAlign: "center" }}>
-                            <Button variant="contained"
-                                sx={{
-                                    bgcolor: theme.palette.primary.dark,
-                                    width: "100%"
-                                }}>
-                                <Typography variant="h5">Add new task</Typography>
-                            </Button>
-                        </Link>
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "20px", m: 4 }}>
-                        {filteredTasks.map((task) => (
+                    <Typography variant="h2" sx={{textAlign:"center",color:theme.palette.text.main,mt:2}}>Completed Tasks</Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "20px", m: 5 }}>
+                        {doneTasks.map((task) => (
                             <CardContent sx={{ bgcolor: theme.palette.primary.dark, height: "auto", width: "400px", borderRadius: 3 }}>
 
                                 <Box sx={{ color: theme.palette.text.main }}>
@@ -90,16 +68,6 @@ const TasksPage = () => {
                                 </Box>
 
                                 <Box sx={{ textAlign: "right", mt: 3 }}>
-                                    <Fab size="medium" sx={{ mr: 2, bgcolor: "#004600", color: "#fff" }} onClick={() => handleDone(task.id)}>
-                                        <CheckCircleIcon sx={{ fontSize: 28 }} />
-                                    </Fab>
-
-                                    <Link to={`/tasks/edit/${task.id}`}>
-                                        <Fab size="medium" sx={{ mr: 2, bgcolor: "gray", color: "#fff" }}>
-                                            <EditIcon sx={{ fontSize: 28 }} />
-                                        </Fab>
-                                    </Link>
-
                                     <Fab size="medium" sx={{ bgcolor: "#800000", color: "#fff" }} onClick={() => handleDelete(task.id)}>
                                         <DeleteIcon sx={{ fontSize: 28 }} />
                                     </Fab>
@@ -112,7 +80,7 @@ const TasksPage = () => {
                 <Typography>Loading</Typography>
             )}
         </>
-    );
+    )
 }
 
-export default TasksPage;
+export default DoneTasksPage;

@@ -7,8 +7,10 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-
-
+import { useSelector,useDispatch } from 'react-redux';
+import { setSearchQuery
+  
+ } from '../../store/reducers/tasksReducer/tasksReducer';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -22,7 +24,7 @@ const Search = styled('div')(({ theme }) => ({
     marginLeft: theme.spacing(1),
     width: '700px',
   },
-}));
+}));  
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -53,8 +55,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Navbar = () => 
 {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
+    const searchValue = useSelector(state => state.tasks.searchQuery);
     return(
       <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static"  sx={{backgroundColor:theme.palette.primary.main}}>
@@ -84,6 +88,8 @@ const Navbar = () =>
       <StyledInputBase
         placeholder="Search…"
         inputProps={{ 'aria-label': 'search' }}
+        value={searchValue}
+        onChange={(e) => dispatch(setSearchQuery(e.target.value))}
       />
     </Search>
   </Box>

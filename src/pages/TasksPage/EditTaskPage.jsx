@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material";
+import { Box, TextField , MenuItem} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -22,11 +22,10 @@ const EditTaskPage = () => {
 
     const handleSubmit = (values) => {
 
-        const tagsArray = values.tags
-            .split(",")
-            .map(tag => tag.trim())
-            .filter(tag => tag)
-            .map(tag => `#${tag}`)
+    const tagsArray = values.tags
+        .split(",")
+        .map(tag => tag.trim())
+        .map(tag => tag.startsWith("#") ? tag : `#${tag}`);
 
         const formattedTags = tagsArray.join(" ");
         const date = new Date(values.deadline);
@@ -159,21 +158,24 @@ const EditTaskPage = () => {
 
 
                             <TextField
-                                label="Task priority"
-                                variant="standard"
-                                value={formik.values.priority}
-                                error={formik.touched.priority && Boolean(formik.errors.priority)}
+                                select
+                                fullWidth
+                                margin="normal"
+                                label="Priority"
                                 name="priority"
+                                value={formik.values.priority}
                                 onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                helperText={formik.touched.priority && formik.errors.priority}
                                 InputProps={{
                                     style: { color: theme.palette.text.main }
                                 }}
                                 InputLabelProps={{
                                     style: { color: theme.palette.text.main }
                                 }}
-                            />
+                            >
+                                <MenuItem value="Low">Low</MenuItem>
+                                <MenuItem value="Medium">Medium</MenuItem>
+                                <MenuItem value="High">High</MenuItem>
+                            </TextField>
 
 
                             <label style={{ color: theme.palette.text.main }} htmlFor="deadline">Deadline:</label>

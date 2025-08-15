@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    tasks: JSON.parse(localStorage.getItem("tasks")) || []
+    tasks: JSON.parse(localStorage.getItem("tasks")) || [],
+    doneTasks: JSON.parse(localStorage.getItem("doneTasks")) || [],
+    searchQuery:"",
 }
 
 const taskSlice = createSlice({
@@ -27,6 +29,28 @@ const taskSlice = createSlice({
                 state.tasks[index] = action.payload;
                 localStorage.setItem("tasks", JSON.stringify(state.tasks));
             }
+        },
+        doneTask: (state, action ) => {
+            const task = state.tasks.find((t) => t.id == action.payload);
+            if(task)
+            {
+                state.tasks = state.tasks.filter((t) => t.id != action.payload);
+                localStorage.setItem("tasks",JSON.stringify(state.tasks));
+                state.doneTasks.push(task);
+                localStorage.setItem("doneTasks",JSON.stringify(state.doneTasks));
+            }
+        },
+        deleteDoneTask: (state, action) => {
+            console.log(state, action);
+            state.doneTasks = action.payload;
+            if(state.doneTasks)
+            {
+                localStorage.setItem("doneTasks",JSON.stringify(state.doneTasks));
+            }
+            localStorage.removeItem("doneTasks");
+        },
+        setSearchQuery: (state, action) => {
+            state.searchQuery = action.payload
         }
     }
 })
@@ -34,4 +58,7 @@ const taskSlice = createSlice({
 export const { addTask } = taskSlice.actions
 export const { deleteTask } = taskSlice.actions
 export const {editTask} = taskSlice.actions
+export const {doneTask} = taskSlice.actions
+export const {deleteDoneTask} = taskSlice.actions
+export const {setSearchQuery} = taskSlice.actions
 export default taskSlice.reducer

@@ -8,7 +8,9 @@ import TasksPage from "./pages/TasksPage/TasksPage";
 import { Navigate } from 'react-router-dom';
 import AddTaskPage from './pages/TasksPage/AddTaskPage';
 import EditTaskPage from "./pages/TasksPage/EditTaskPage";
-
+import DoneTasksPage from "./pages/TasksPage/DoneTasksPage";
+import AddProjectPage from './pages/ProjectsPage/AddProjectPage';
+import AddTaskToAProject from "./pages/ProjectsPage/AddTaskToAProject";
 function App() {
   return (
     <>
@@ -20,6 +22,9 @@ function App() {
             <Route path="/tasks/add" element={<AddTaskPage />} />
             <Route path="projects" element={<ProjectsPage />} />
             <Route path="/tasks/edit/:id"  element={<EditTaskPage />}/>
+            <Route path="/tasks/done" element={<DoneTasksPage />} />
+            <Route path="/projects/add" element={<AddProjectPage />} />
+            <Route path="/projects/:id/addTask"  element={<AddTaskToAProject />} />
           </Route>
         </Routes>
       </ThemeProvider>

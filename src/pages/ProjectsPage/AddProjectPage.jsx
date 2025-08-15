@@ -1,4 +1,4 @@
-import { Box, TextField, Typography, MenuItem } from "@mui/material";
+import { Box, TextField,Typography,MenuItem} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -7,52 +7,40 @@ import { Button } from "@mui/material"
 import { addTask } from "../../store/reducers/tasksReducer/tasksReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { addProject } from "../../store/reducers/projectsReducer/projectsReducer";
 
 
-
-const AddTaskPage = () => {
+const AddProjectPage = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const tasks = useSelector(state => state.tasks.tasks);
-
+    const projects = useSelector(state => state.projects.projects);
     const handleSubmit = (values) => {
-        const lastId = tasks.at(-1)?.id ?? 1;
+        const lastId = projects.at(-1)?.id ?? 1;
 
-    const tagsArray = values.tags
-        .split(",")
-        .map(tag => tag.trim())
-        .map(tag => tag.startsWith("#") ? tag : `#${tag}`);
-
+        const tagsArray = values.tags
+            .split(",")
+            .map(tag => tag.trim())
+            .filter(tag => tag)
+            .map(tag => `#${tag}`)
 
         const formattedTags = tagsArray.join(" ");
-        const date = new Date(values.deadline);
 
-        const formattedDateTime = date.toLocaleString("en-US", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-
-
-        const newTask = {
+        console.log();
+        const newProject = {
             id: lastId + 1,
             name: values.name,
             description: values.description,
             priority: values.priority,
-            deadline: formattedDateTime,
             tags: formattedTags
         }
-        dispatch(addTask(newTask));
-        navigate("/tasks");
+        dispatch(addProject(newProject));
+        navigate("/projects");
     }
 
     const initValues = {
         name: "",
-        deadline: new Date().toLocaleDateString(),
         description: "",
         priority: "",
         tags: ""
@@ -60,17 +48,12 @@ const AddTaskPage = () => {
 
     const validScheme = Yup.object({
         name: Yup.string()
-            .required("Name is a required field").min(3, "Task name must be at least 3 characters"),
+            .required("Name is a required field").min(3, "Project name must be at least 3 characters"),
         description: Yup.string()
-            .required("Task must have a description"),
-        deadline: Yup.date()
-            .required("Task must have a deadline").min(
-                new Date(new Date().setHours(0, 0, 0, 0)),
-                "Deadline cannot be in the past"
-            ),
+            .required("Project must have a description"),
         tags: Yup.string()
-            .required("Task must have at least 1 tag"),
-        priority: Yup.string().required("Task must have a priority")
+            .required("Project must have at least 1 tag"),
+        priority: Yup.string().required("Project must have a priority")
 
     });
 
@@ -84,16 +67,16 @@ const AddTaskPage = () => {
     return (
         <>
 
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "top", height: "100vh", width: "88.3%", borderRadius: 3 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "top", height: "100vh", width: "88.3%",borderRadius:3 }}>
 
                 <Box
                     sx={{
-                        height: "650px",
+                        height: "600px",
                         bgcolor: theme.palette.primary.light,
                         width: "700px",
                         display: "flex",
-                        justifyContent: "center",
-                        borderRadius: 3
+                        justifyContent:"center",
+                        borderRadius:3
                     }}
                 >
                     <Box
@@ -103,10 +86,10 @@ const AddTaskPage = () => {
                             display: "flex",
                             flexDirection: "column",
                             gap: 2,
-                            mt: 7,
+                            mt:7,
                         }}
                     >
-                        <Typography variant="h2" sx={{ textAlign: "center", color: theme.palette.text.main }}>Add Task</Typography>
+                        <Typography variant="h2" sx={{textAlign:"center",color:theme.palette.text.main}}>Add New Project</Typography>
                         <form onSubmit={formik.handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <TextField
                                 label="Task name"
@@ -128,7 +111,7 @@ const AddTaskPage = () => {
 
 
                             <TextField
-                                label="Task description"
+                                label="Project description"
                                 variant="standard"
                                 value={formik.values.description}
                                 error={formik.touched.description && Boolean(formik.errors.description)}
@@ -143,6 +126,8 @@ const AddTaskPage = () => {
                                     style: { color: theme.palette.text.main }
                                 }}
                             />
+
+
 
                             <TextField
                                 select
@@ -164,14 +149,6 @@ const AddTaskPage = () => {
                                 <MenuItem value="High">High</MenuItem>
                             </TextField>
 
-
-                            <label style={{ color: theme.palette.text.main }} htmlFor="deadline">Deadline:</label>
-                            <input value={formik.values.deadline} onChange={formik.handleChange} onBlur={formik.handleBlur} name="deadline" id="deadline" type="date" style={{ backgroundColor: theme.palette.primary.light, color: theme.palette.text.main }} />
-                            {formik.touched.deadline && formik.errors.deadline && (
-                                <FormHelperText error style={{ marginLeft: 0, fontSize: "1em" }}>
-                                    {formik.errors.deadline}
-                                </FormHelperText>
-                            )}
                             <TextField
                                 label="Task tags (seperate words with comma)"
                                 variant="standard"
@@ -191,7 +168,7 @@ const AddTaskPage = () => {
 
 
                             <Button variant="contained" type="submit" disabled={!formik.isValid}>
-                                Create task
+                                Create Project
                             </Button>
                         </form>
                     </Box>
@@ -201,4 +178,4 @@ const AddTaskPage = () => {
     );
 };
 
-export default AddTaskPage;
+export default AddProjectPage;
